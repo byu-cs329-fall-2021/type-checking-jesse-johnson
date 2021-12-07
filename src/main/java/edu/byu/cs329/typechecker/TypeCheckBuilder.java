@@ -11,17 +11,27 @@ import java.util.Deque;
 import java.util.List;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BooleanLiteral;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.ExpressionStatement;
+import org.eclipse.jdt.core.dom.FieldAccess;
+import org.eclipse.jdt.core.dom.IfStatement;
+import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.NumberLiteral;
+import org.eclipse.jdt.core.dom.PrefixExpression;
+import org.eclipse.jdt.core.dom.QualifiedName;
+import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
+import org.eclipse.jdt.core.dom.WhileStatement;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicNode;
@@ -186,6 +196,105 @@ public class TypeCheckBuilder {
     }
 
     @Override
+    public boolean visit(ReturnStatement node) {
+      pushTypeCheck(new ArrayList<>());
+      Expression e = node.getExpression();
+      String type = typeStack.peekLast();
+      if (type == TypeCheckTypes.VOID && e != null){
+        pushType(TypeCheckTypes.ERROR);
+      }
+      else if (type != TypeCheckTypes.VOID && e == null){
+        pushType(TypeCheckTypes.ERROR);
+      }
+      else{
+        e.accept(this);
+        pushType(TypeCheckTypes.VOID);
+      }
+      return super.visit(node);
+    }
+    @Override
+    public boolean visit(ExpressionStatement node) {
+      Expression e = node.getExpression();
+      pushTypeCheck(new ArrayList<>());
+      e.accept(this);
+      if (e instanceof Assignment){
+        assert typeStack.peekLast() == null;
+        pushType(TypeCheckTypes.VOID);
+      }
+      else if (e instanceof MethodInvocation){
+
+      }
+      else {
+        pushType(TypeCheckTypes.ERROR);
+      }
+      return false;
+    }
+    @Override
+    public boolean visit(PrefixExpression node) {
+      pushTypeCheck(new ArrayList<>());
+      String name = node.getOperand().toString();
+      String type = TypeCheckTypes.BOOL;
+      generateLookupTestAndAddToObligations(name, type);
+      pushType(type);
+      return false;
+    }
+    @Override
+    public boolean visit(InfixExpression node) {
+      pushTypeCheck(new ArrayList<>());
+      Expression lhs = node.getLeftOperand();
+      Expression rhs = node.getRightOperand();
+      InfixExpression.Operator op = node.getOperator();
+      if (!(lhs instanceof NumberLiteral) || !(rhs instanceof NumberLiteral)){
+        pushType(TypeCheckTypes.ERROR);
+      }
+      else if (op.equals(InfixExpression.Operator.PLUS) || op.equals(InfixExpression.Operator.MINUS)){
+        pushType(TypeCheckTypes.INT);
+      }
+      else if (op.equals(InfixExpression.Operator.LESS) || op.equals(InfixExpression.Operator.LESS_EQUALS)){
+        pushType(TypeCheckTypes.BOOL);
+      }
+      return false;
+    }
+    @Override
+    public boolean visit(IfStatement node) {
+      pushTypeCheck(new ArrayList<>());
+      node.getExpression().accept(this);
+      if (typeStack.peekLast() != TypeCheckTypes.BOOL){
+        pushType(TypeCheckTypes.ERROR);
+      }
+      node.getThenStatement().accept(this);
+      node.getElseStatement().accept(this);
+      pushType(TypeCheckTypes.VOID);
+
+      return false;
+    }
+    @Override
+    public boolean visit(WhileStatement node) {
+      pushTypeCheck(new ArrayList<>());
+      node.getExpression().accept(this);
+      if (typeStack.peekLast() != TypeCheckTypes.BOOL){
+        pushType(TypeCheckTypes.ERROR);
+      }
+      else pushType(TypeCheckTypes.VOID);
+      return false;
+    }
+    @Override
+    public boolean visit(FieldAccess node) {
+      pushTypeCheck(new ArrayList<>());
+      return false;
+    }
+    @Override
+    public boolean visit(QualifiedName node) {
+      pushTypeCheck(new ArrayList<>());
+      return false;
+    }
+    @Override
+    public boolean visit(MethodInvocation node) {
+      pushTypeCheck(new ArrayList<>());
+      return false;
+    }
+
+    @Override
     public void endVisit(CompilationUnit node) {
       String name = "CompilationUnit ";
       generateProofAndAddToObligations(name);
@@ -239,6 +348,36 @@ public class TypeCheckBuilder {
     @Override
     public void endVisit(NullLiteral node) {
       String name = node.toString();
+      generateProofAndAddToObligations(name);
+    }
+    @Override
+    public void endVisit(ReturnStatement node) {
+      String name = generateStatementName();
+      generateProofAndAddToObligations(name);
+    }
+    @Override
+    public void endVisit(ExpressionStatement node) {
+      String name = generateStatementName();
+      generateProofAndAddToObligations(name);
+    }
+    @Override
+    public void endVisit(PrefixExpression node) {
+      String name = node.toString();
+      generateProofAndAddToObligations(name);
+    }
+    @Override
+    public void endVisit(InfixExpression node) {
+      String name = node.toString();
+      generateProofAndAddToObligations(name);
+    }
+    @Override
+    public void endVisit(IfStatement node) {
+      String name = generateStatementName();
+      generateProofAndAddToObligations(name);
+    }
+    @Override
+    public void endVisit(WhileStatement node) {
+      String name = generateStatementName();
       generateProofAndAddToObligations(name);
     }
 

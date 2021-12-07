@@ -99,4 +99,136 @@ public class TypeCheckBuilderTests {
     DynamicTest test = DynamicTest.dynamicTest("isNotTypeSafe", () -> assertFalse(isTypeSafe));
     return Arrays.asList((DynamicNode)test).stream();
   }
+  @TestFactory
+  @DisplayName("Should prove type safe for prefix expression")
+  Stream<DynamicNode> should_ProveTypeSafe_for_PrefixExpression() {
+    String fileName = "typeChecker/prefix.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    DynamicTest test = DynamicTest.dynamicTest("isTypeSafe", () -> assertTrue(isTypeSafe));
+    tests.add((DynamicNode)test);
+    return tests.stream();
+  }
+
+  @TestFactory
+  @DisplayName("Should prove type safe for infix expression as integer")
+  Stream<DynamicNode> should_ProveTypeSafe_for_InfixExpression_Int() {
+    String fileName = "typeChecker/infix_int.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    DynamicTest test = DynamicTest.dynamicTest("isTypeSafe", () -> assertTrue(isTypeSafe));
+    tests.add((DynamicNode)test);
+    return tests.stream();
+  }
+  @TestFactory
+  @DisplayName("Should prove type safe for infix expression as boolean")
+  Stream<DynamicNode> should_ProveTypeSafe_for_InfixExpression_Boolean() {
+    String fileName = "typeChecker/infix_bool.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    DynamicTest test = DynamicTest.dynamicTest("isTypeSafe", () -> assertTrue(isTypeSafe));
+    tests.add((DynamicNode)test);
+    return tests.stream();
+  }
+  @TestFactory
+  @DisplayName("Should not prove type safe for infix expression")
+  Stream<DynamicNode> should_NotProveTypeSafe_for_InfixExpression_Broken() {
+    String fileName = "typeChecker/infix_broken.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    DynamicTest test = DynamicTest.dynamicTest("isNotTypeSafe", () -> assertFalse(isTypeSafe));
+    tests.add((DynamicNode)test);
+    return tests.stream();
+  }
+  @TestFactory
+  @DisplayName("Should prove type safe for return statement")
+  Stream<DynamicNode> should_ProveTypeSafe_for_ReturnStatement() {
+    String fileName = "typeChecker/return_statement.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    DynamicTest test = DynamicTest.dynamicTest("isTypeSafe", () -> assertTrue(isTypeSafe));
+    tests.add((DynamicNode)test);
+    return tests.stream();
+  }
+  @TestFactory
+  @DisplayName("Should not prove type safe for return statement when no expression to return")
+  Stream<DynamicNode> should_NotProveTypeSafe_for_ReturnStatement_NullExpression() {
+    String fileName = "typeChecker/return_null.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    DynamicTest test = DynamicTest.dynamicTest("isNotTypeSafe", () -> assertFalse(isTypeSafe));
+    tests.add((DynamicNode)test);
+    return tests.stream();
+  }
+  @TestFactory
+  @DisplayName("Should not prove type safe for return statement when not void")
+  Stream<DynamicNode> should_NotProveTypeSafe_for_ReturnStatement_NotVoid() {
+    String fileName = "typeChecker/return_notVoid.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    DynamicTest test = DynamicTest.dynamicTest("isNotTypeSafe", () -> assertFalse(isTypeSafe));
+    tests.add((DynamicNode)test);
+    return tests.stream();
+  }
+  @TestFactory
+  @DisplayName("Should prove type safe for expression statement as assignment")
+  Stream<DynamicNode> should_ProveTypeSafe_for_ExpressionStatement_Assignment() {
+    String fileName = "typeChecker/expression_assignment.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    DynamicTest test = DynamicTest.dynamicTest("isTypeSafe", () -> assertTrue(isTypeSafe));
+    tests.add((DynamicNode)test);
+    return tests.stream();
+  }
+  @TestFactory
+  @DisplayName("Should not prove type safe for expression statement when not assignment or method invocation")
+  Stream<DynamicNode> should_NotProveTypeSafe_for_ExpressionStatement_Broken() {
+    String fileName = "typeChecker/expression_broken.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    DynamicTest test = DynamicTest.dynamicTest("isNotTypeSafe", () -> assertFalse(isTypeSafe));
+    tests.add((DynamicNode)test);
+    return tests.stream();
+  }
+  @TestFactory
+  @DisplayName("Should prove type safe for if statement")
+  Stream<DynamicNode> should_ProveTypeSafe_for_IfStatement() {
+    String fileName = "typeChecker/if_statement.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    DynamicTest test = DynamicTest.dynamicTest("isTypeSafe", () -> assertTrue(isTypeSafe));
+    tests.add((DynamicNode)test);
+    return tests.stream();
+  }
+  @TestFactory
+  @DisplayName("Should prove not type safe for if statement not as boolean")
+  Stream<DynamicNode> should_NotProveTypeSafe_for_IfStatement_Broken() {
+    String fileName = "typeChecker/if_broken.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    DynamicTest test = DynamicTest.dynamicTest("isNotTypeSafe", () -> assertFalse(isTypeSafe));
+    tests.add((DynamicNode)test);
+    return tests.stream();
+  }
+  @TestFactory
+  @DisplayName("Should prove type safe for while statement")
+  Stream<DynamicNode> should_ProveTypeSafe_for_WhileStatement() {
+    String fileName = "typeChecker/while_statement.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    DynamicTest test = DynamicTest.dynamicTest("isTypeSafe", () -> assertTrue(isTypeSafe));
+    tests.add((DynamicNode)test);
+    return tests.stream();
+  }
+  @TestFactory
+  @DisplayName("Should not prove type safe for while statement not as boolean")
+  Stream<DynamicNode> should_NotProveTypeSafe_for_WhileStatement_Broken() {
+    String fileName = "";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    DynamicTest test = DynamicTest.dynamicTest("isNotTypeSafe", () -> assertFalse(isTypeSafe));
+    tests.add((DynamicNode)test);
+    return tests.stream();
+  }
+  
 }
