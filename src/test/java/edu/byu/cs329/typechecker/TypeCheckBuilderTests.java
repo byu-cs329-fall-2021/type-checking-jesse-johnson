@@ -5,14 +5,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import edu.byu.cs329.utils.JavaSourceUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
+import org.opentest4j.AssertionFailedError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -231,4 +235,225 @@ public class TypeCheckBuilderTests {
     return tests.stream();
   }
   
+  @Test
+  @DisplayName("Test for prefix test")
+  void prefix(){
+    String fileName = "typeChecker/prefix.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    Assertions.assertTrue(isTypeSafe);
+    Iterator<DynamicNode> iter = tests.iterator();
+    DynamicNode n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    DynamicTest t = (DynamicTest) n;
+    Assertions.assertDoesNotThrow(t.getExecutable());
+    n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    t = (DynamicTest) n;
+    Assertions.assertThrows(AssertionFailedError.class, t.getExecutable());
+  }
+  @Test
+  @DisplayName("Test for integer infix test")
+  void integer_infix(){
+    String fileName = "typeChecker/infix_int.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    Assertions.assertTrue(isTypeSafe);
+    Iterator<DynamicNode> iter = tests.iterator();
+    DynamicNode n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    DynamicTest t = (DynamicTest) n;
+    Assertions.assertDoesNotThrow(t.getExecutable());
+    n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    t = (DynamicTest) n;
+    Assertions.assertThrows(AssertionFailedError.class, t.getExecutable());
+  }
+  @Test
+  @DisplayName("Test for boolean infix test")
+  void boolean_infix(){
+    String fileName = "typeChecker/infix_bool.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    Assertions.assertTrue(isTypeSafe);
+    Iterator<DynamicNode> iter = tests.iterator();
+    DynamicNode n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    DynamicTest t = (DynamicTest) n;
+    Assertions.assertDoesNotThrow(t.getExecutable());
+    n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    t = (DynamicTest) n;
+    Assertions.assertThrows(AssertionFailedError.class, t.getExecutable());
+  }
+  @Test
+  @DisplayName("Test for failed infix test")
+  void failed_infix(){
+    String fileName = "typeChecker/infix_broken.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    Assertions.assertFalse(isTypeSafe);
+    Iterator<DynamicNode> iter = tests.iterator();
+    DynamicNode n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    DynamicTest t = (DynamicTest) n;
+    Assertions.assertDoesNotThrow(t.getExecutable());
+    n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    t = (DynamicTest) n;
+    Assertions.assertThrows(AssertionFailedError.class, t.getExecutable());
+  }
+  @Test
+  @DisplayName("Test for return sucess test")
+  void return_success(){
+    String fileName = "typeChecker/return_statement.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    Assertions.assertFalse(isTypeSafe);
+    Iterator<DynamicNode> iter = tests.iterator();
+    DynamicNode n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    DynamicTest t = (DynamicTest) n;
+    Assertions.assertDoesNotThrow(t.getExecutable());
+    n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    t = (DynamicTest) n;
+    Assertions.assertThrows(AssertionFailedError.class, t.getExecutable());
+  }
+  @Test
+  @DisplayName("Test for return not void test")
+  void return_not_void(){
+    String fileName = "typeChecker/return_notVoid.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    Assertions.assertTrue(isTypeSafe);
+    Iterator<DynamicNode> iter = tests.iterator();
+    DynamicNode n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    DynamicTest t = (DynamicTest) n;
+    Assertions.assertDoesNotThrow(t.getExecutable());
+    n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    t = (DynamicTest) n;
+    Assertions.assertThrows(AssertionFailedError.class, t.getExecutable());
+  }
+  @Test
+  @DisplayName("Test for return null test")
+  void return_null(){
+    String fileName = "typeChecker/return_null.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    Assertions.assertFalse(isTypeSafe);
+    Iterator<DynamicNode> iter = tests.iterator();
+    DynamicNode n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    DynamicTest t = (DynamicTest) n;
+    Assertions.assertDoesNotThrow(t.getExecutable());
+    n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    t = (DynamicTest) n;
+    Assertions.assertThrows(AssertionFailedError.class, t.getExecutable());
+  }
+  @Test
+  @DisplayName("Test for expression assignment test")
+  void expression_assignment(){
+    String fileName = "typeChecker/expression_assignment.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    Assertions.assertTrue(isTypeSafe);
+    Iterator<DynamicNode> iter = tests.iterator();
+    DynamicNode n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    DynamicTest t = (DynamicTest) n;
+    Assertions.assertDoesNotThrow(t.getExecutable());
+    n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    t = (DynamicTest) n;
+    Assertions.assertThrows(AssertionFailedError.class, t.getExecutable());
+  }
+  @Test
+  @DisplayName("Test for expression fail test")
+  void expression_fail(){
+    String fileName = "typeChecker/expression_broken.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    Assertions.assertFalse(isTypeSafe);
+    Iterator<DynamicNode> iter = tests.iterator();
+    DynamicNode n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    DynamicTest t = (DynamicTest) n;
+    Assertions.assertDoesNotThrow(t.getExecutable());
+    n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    t = (DynamicTest) n;
+    Assertions.assertThrows(AssertionFailedError.class, t.getExecutable());
+  }
+  @Test
+  @DisplayName("Test for if success test")
+  void if_success(){
+    String fileName = "typeChecker/if_statement.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    Assertions.assertTrue(isTypeSafe);
+    Iterator<DynamicNode> iter = tests.iterator();
+    DynamicNode n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    DynamicTest t = (DynamicTest) n;
+    Assertions.assertDoesNotThrow(t.getExecutable());
+    n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    t = (DynamicTest) n;
+    Assertions.assertThrows(AssertionFailedError.class, t.getExecutable());
+  }
+  @Test
+  @DisplayName("Test for if fail test")
+  void if_fail(){
+    String fileName = "typeChecker/if_broken.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    Assertions.assertFalse(isTypeSafe);
+    Iterator<DynamicNode> iter = tests.iterator();
+    DynamicNode n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    DynamicTest t = (DynamicTest) n;
+    Assertions.assertDoesNotThrow(t.getExecutable());
+    n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    t = (DynamicTest) n;
+    Assertions.assertThrows(AssertionFailedError.class, t.getExecutable());
+  }
+  @Test
+  @DisplayName("Test for while success test")
+  void while_success(){
+    String fileName = "typeChecker/while_statement.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    Assertions.assertTrue(isTypeSafe);
+    Iterator<DynamicNode> iter = tests.iterator();
+    DynamicNode n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    DynamicTest t = (DynamicTest) n;
+    Assertions.assertDoesNotThrow(t.getExecutable());
+    n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    t = (DynamicTest) n;
+    Assertions.assertThrows(AssertionFailedError.class, t.getExecutable());
+  }
+  @Test
+  @DisplayName("Test for while fail test")
+  void while_fail(){
+    String fileName = "typeChecker/while_broken.java";
+    List<DynamicNode> tests = new ArrayList<>();
+    boolean isTypeSafe = getTypeChecker(fileName, tests);
+    Assertions.assertFalse(isTypeSafe);
+    Iterator<DynamicNode> iter = tests.iterator();
+    DynamicNode n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    DynamicTest t = (DynamicTest) n;
+    Assertions.assertDoesNotThrow(t.getExecutable());
+    n = iter.next();
+    Assertions.assertTrue(n instanceof DynamicTest);
+    t = (DynamicTest) n;
+    Assertions.assertThrows(AssertionFailedError.class, t.getExecutable());
+  }
 }
