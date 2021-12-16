@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 
 public class TypeCheckBuilder {
   static final Logger log = LoggerFactory.getLogger(TypeCheckBuilder.class);
+  //random comment
 
   class Visitor extends ASTVisitor {
     ISymbolTable symbolTable = null;
